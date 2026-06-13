@@ -19,11 +19,8 @@ jobs:
       - name: Checkout your repository using git
         uses: actions/checkout@v4
       - name: Install, build, and upload your site
-        uses: withastro/action@v3
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v3  # 或 @v4
-        with:
-          version: 9  # 填入你需要的具体版本号，如 8.15.0 或 9
+        uses: withastro/action@v4
+
 
   deploy:
     needs: build
@@ -35,3 +32,7 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4  # 或 @v4
+        with:
+          version: 11.5.3  # 填入你需要的具体版本号，如 8.15.0 或 9
