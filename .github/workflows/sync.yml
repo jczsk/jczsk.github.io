@@ -18,6 +18,9 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          # 将下面的 URL 替换为你的目标仓库地址，使用 Token 进行鉴权
-          git remote add target https://x-access-token:${{ secrets.DEPLOY_TOKEN }}@github.com/yxtcfw/yxtcfw.github.io.git
-          git push target master --force
+          # 2. 添加远程仓库，注意这里将 Token 嵌入到了 URL 中
+            # 格式是：https://用户名:Token@仓库地址
+            git remote add target https://yxtcfw:${{ secrets.DEPLOY_TOKEN }}@github.com/yxtcfw/yxtcfw.github.io.git
+    
+            # 3. 强制推送到目标仓库
+            git push target master --force
