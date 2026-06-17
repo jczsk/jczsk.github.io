@@ -1,0 +1,23 @@
+name: Sync to Target Repository
+
+on:
+  push:
+    branches:
+      - master  # 监听 main 分支的推送，可以改成你需要的分支
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # 获取完整历史记录
+
+      - name: Push to target repo
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          # 将下面的 URL 替换为你的目标仓库地址，使用 Token 进行鉴权
+          git remote add target https://x-access-token:${{ secrets.TARGET_REPO_TOKEN }}@github.com/yxtcfw/yxtcfw.github.io.git
+          git push target main --force
