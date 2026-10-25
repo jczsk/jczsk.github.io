@@ -5,5 +5,5 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   site: 'https://jczsk.github.io',
-  base: '/jczsk.github.io', 
+  base: '/', 
 });
