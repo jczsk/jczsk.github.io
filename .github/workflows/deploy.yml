@@ -1,18 +1,36 @@
 name: Deploy to GitHub Pages
+
 on:
   push:
     branches: [ master ]
   workflow_dispatch:
+
+# 设置 GitHub Pages 所需的权限
 permissions:
   contents: read
   pages: write
   id-token: write
+
+# 允许并发运行，但取消之前的运行
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: withastro/action@v3
+      # 1. 检出代码
+      - name: Checkout your repository using git
+        uses: actions/checkout@v4
+      
+      # 2. 设置 Node.js 环境 (修正点：升级到 v22 以兼容新版 pnpm)
+      - name: Install, build, and upload your site
+        uses: withastro/action@v3
+        with:
+          node-version: 22 # 强制使用 Node 22，解决 "requires at least Node.js v22.13" 的问题
+          package-manager: pnpm@9 # 显式告诉 Astro Action 使用 pnpm 版本 9
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -20,5 +38,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/deploy-pages@v4
+      # 3. 部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
