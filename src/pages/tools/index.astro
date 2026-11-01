@@ -1,0 +1,67 @@
+---
+// src/pages/tools/index.astro
+import { type CollectionEntry, getCollection, getEntry } from "astro:content";
+import PageLayout from "@layouts/PageLayout.astro";
+import Container from "@components/Container.astro";
+import ArrowCard from "@components/ArrowCard.astro";
+import Link from "@components/Link.astro";
+
+// 1. 配置区
+const COLLECTION_NAME = "tools"; 
+const INDEX_SLUG = "index";
+
+// 2. 获取并处理列表数据
+const allPosts: CollectionEntry<typeof COLLECTION_NAME>[] = await getCollection(COLLECTION_NAME);
+const posts = allPosts
+  .filter((post) => !post.data.draft && post.slug !== INDEX_SLUG)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// 3. 安全获取首页介绍内容 (index.md)
+const indexEntry = await getEntry(COLLECTION_NAME, INDEX_SLUG).catch(() => null);
+const { Content: IndexContent } = indexEntry 
+  ? await indexEntry.render() 
+  : { Content: null };
+
+// 4. 动态获取页面标题和描述（用于SEO）
+const pageTitle = indexEntry?.data.title || "极客提效工具";
+const pageDesc = indexEntry?.data.description || "精选办公提效软件、自动化脚本与开源模型库";
+---
+
+<PageLayout title={pageTitle} description={pageDesc}>
+  <Container>
+    {/* 渲染 index.md 的介绍内容 */}
+    {indexEntry && (
+      <article class="mb-10 animate space-y-4">
+        <h1 class="text-3xl font-bold text-black dark:text-white">{pageTitle}</h1>
+        {IndexContent && <div class="prose dark:prose-invert opacity-90"><IndexContent /></div>}
+        
+        <!-- 💡 转化钩子：引导用户关注公众号 -->
+        <div class="mt-6 p-4 border border-dashed border-black/20 dark:border-white/20 rounded-lg bg-black/5 dark:bg-white/5">
+          <p class="text-sm opacity-80">
+            💡 <strong>获取方式：</strong>部分高级工具/脚本需关注公众号回复对应关键词获取。
+            <Link href="/media" class="underline font-semibold">👉 前往媒体页关注</Link>
+          </p>
+        </div>
+      </article>
+    )}
+
+    {/* 渲染工具列表 */}
+    {posts.length > 0 ? (
+      <div class="space-y-10">
+        <section class="animate space-y-4">
+          <ul class="flex flex-col gap-4">
+            {posts.map((post) => (
+              <li key={post.slug}>
+                <ArrowCard entry={post} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
+    ) : (
+      <div class="animate text-center py-20 opacity-60">
+        <p class="text-xl">🛠️ 正在快马加鞭整理中，敬请期待...</p>
+      </div>
+    )}
+  </Container>
+</PageLayout>

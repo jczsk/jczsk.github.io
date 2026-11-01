@@ -1,6 +1,6 @@
 import { defineCollection, z } from "astro:content";
 
-const blog = defineCollection({
+const work = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
@@ -10,26 +10,33 @@ const blog = defineCollection({
   }),
 });
 
-const work = defineCollection({
-  type: "content",
-  schema: z.object({
-    company: z.string(),
-    role: z.string(),
-    dateStart: z.coerce.date(),
-    dateEnd: z.union([z.coerce.date(), z.string()]),
-  }),
-});
-
-const projects = defineCollection({
+const tools = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
-    draft: z.boolean().optional(),
-    demoURL: z.string().optional(),
-    repoURL: z.string().optional()
+    draft: z.boolean().optional()
   }),
 });
 
-export const collections = { blog, work, projects };
+const index = defineCollection({
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    weight: z.number().optional().default(0), // 仅保留权重字段
+    // dateStart 和 dateEnd 已删除
+  }),
+});
+
+const media = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    draft: z.boolean().optional()
+  }),
+});
+
+export const collections = { index, tools, work, media };

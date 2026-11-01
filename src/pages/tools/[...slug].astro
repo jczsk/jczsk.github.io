@@ -1,0 +1,60 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import PageLayout from "@layouts/PageLayout.astro";
+import Container from "@components/Container.astro";
+import FormattedDate from "@components/FormattedDate.astro";
+import BackToPrev from "@components/BackToPrev.astro";
+import { readingTime } from "@lib/utils";
+
+// 1. 动态生成静态路径（所有相关变量必须定义在函数内部）
+export async function getStaticPaths() {
+  // 👇 将集合名称定义在这里，确保函数内部可以访问
+  const COLLECTION_NAME = "tools"; 
+
+  const posts = (await getCollection(COLLECTION_NAME))
+    .filter(post => !post.data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: post,
+  }));
+}
+
+// 2. 获取当前文章数据（在外部重新声明，供模板使用）
+const COLLECTION_NAME = "tools"; 
+type Props = CollectionEntry<typeof COLLECTION_NAME>;
+const post = Astro.props as Props;
+
+// 3. 安全渲染内容
+const { Content } = await post.render();
+
+// 4. 自动获取返回路径
+const backPath = `/${COLLECTION_NAME}`;
+---
+
+<PageLayout title={post.data.title} description={post.data.description}>
+  <Container>
+    <div class="animate">
+      <BackToPrev href={backPath}>
+        返回
+      </BackToPrev>
+    </div>
+    <div class="space-y-1 my-10">
+      <div class="animate flex items-center gap-1.5">
+        <div class="font-base text-sm">
+          <FormattedDate date={post.data.date} />
+        </div>
+        &bull;
+        <div class="font-base text-sm">
+          {readingTime(post.body)}
+        </div>
+      </div>
+      <h1 class="animate text-2xl font-semibold text-black dark:text-white">
+        {post.data.title}
+      </h1>
+    </div>
+    <article class="animate">
+      <Content />
+    </article>
+  </Container>
+</PageLayout>

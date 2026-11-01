@@ -1,51 +1,51 @@
 ---
-import { getCollection } from "astro:content";
+// src/pages/[collection]/index.astro 或通用列表页模板
+import { type CollectionEntry, getCollection, getEntry } from "astro:content";
 import PageLayout from "@layouts/PageLayout.astro";
 import Container from "@components/Container.astro";
-import { dateRange } from "@lib/utils";
-import { WORK } from "@consts";
+import ArrowCard from "@components/ArrowCard.astro";
+import { BLOG } from "@consts";
 
-const collection = (await getCollection("work"))
-  .sort((a, b) => new Date(b.data.dateStart).valueOf() - new Date(a.data.dateStart).valueOf());
+//  1. 配置区：修改这里即可切换不同的内容集合
+const COLLECTION_NAME = "work"; 
+const INDEX_SLUG = "index";
 
-const work = await Promise.all(
-  collection.map(async (item) => {
-    const { Content } = await item.render();
-    return { ...item, Content };
-  })
-);
+//  2. 获取并处理列表数据
+const allPosts: CollectionEntry<typeof COLLECTION_NAME>[] = await getCollection(COLLECTION_NAME);
+const posts = allPosts
+  .filter((post) => !post.data.draft && post.slug !== INDEX_SLUG) // 👈 增加过滤条件，排除 index
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+//  3. 安全获取首页介绍内容 (index.md)
+const indexEntry = await getEntry(COLLECTION_NAME, INDEX_SLUG).catch(() => null);
+const { Content: IndexContent } = indexEntry 
+  ? await indexEntry.render() 
+  : { Content: null };
 ---
 
-<PageLayout title={WORK.TITLE} description={WORK.DESCRIPTION}>
+<PageLayout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
   <Container>
-    <div class="space-y-10">
-      <div class="animate font-semibold text-black dark:text-white">
-        Work
-      </div>
-      <ul class="flex flex-col space-y-4">
-        { 
-          work.map(entry => (
-            <li class="animate">
-              <div class="text-sm opacity-75">
-                {dateRange(entry.data.dateStart, entry.data.dateEnd)}
-              </div>
-              <div class="font-semibold text-black dark:text-white">
-                {entry.data.company}
-              </div>
-              <div class="text-sm opacity-75">
-                {entry.data.role}
-              </div>
-              <article>
-                <entry.Content />
-              </article>
-            </li>
-          ))
-        }
-      </ul>
-<!-- 
-      <ul class="animate flex flex-col gap-4">
+    {/* 渲染 index.md 的介绍内容 */}
+    {indexEntry && (
+      <article class="mb-10 prose dark:prose-invert">
+        <h1 class="animate text-2xl font-semibold text-black dark:text-white">{indexEntry.data.title}</h1>
+        {IndexContent && <IndexContent />}
+      </article>
+    )}
 
-      </ul> -->
+    {/* 渲染文章/项目列表 */}
+    <div class="space-y-10">
+      <div class="space-y-4">
+        <section class="animate space-y-4">
+          <ul class="flex flex-col gap-4">
+            {posts.map((post) => (
+              <li key={post.slug}>
+                <ArrowCard entry={post} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      </div>
     </div>
   </Container>
 </PageLayout>

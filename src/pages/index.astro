@@ -4,76 +4,76 @@ import Container from "@components/Container.astro";
 import PageLayout from "@layouts/PageLayout.astro";
 import ArrowCard from "@components/ArrowCard.astro";
 import Link from "@components/Link.astro";
-import { dateRange } from "@lib/utils";
 import { SITE, HOME, SOCIALS } from "@consts";
 
-const blog = (await getCollection("blog"))
+// 获取博客文章（用于媒体板块）
+const media = (await getCollection("media"))
   .filter(post => !post.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0,SITE.NUM_POSTS_ON_HOMEPAGE);
+  .slice(0, 3); // 首页只展示最新3篇
 
-const projects = (await getCollection("projects"))
-  .filter(project => !project.data.draft)
+// 获取项目（用于副业推广板块）
+const work = (await getCollection("work"))
+  .filter(work => !work.data.draft)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0,SITE.NUM_PROJECTS_ON_HOMEPAGE);
-
-const allwork = (await getCollection("work"))
-  .sort((a, b) => new Date(b.data.dateStart).valueOf() - new Date(a.data.dateStart).valueOf())
-  .slice(0,SITE.NUM_WORKS_ON_HOMEPAGE);
-
-const work = await Promise.all(
-  allwork.map(async (item) => {
-    const { Content } = await item.render();
-    return { ...item, Content };
-  })
-);
-
+  .slice(0, 3); // 首页只展示最新3个
 ---
 
 <PageLayout title={HOME.TITLE} description={HOME.DESCRIPTION}>
   <Container>
-    <h4 class="animate font-semibold text-black dark:text-white">
-      Hi, I'm Nano <span class="text-xl">👋🏻</span> 
-    </h4>
-    <div class="space-y-16">
-      <section>
-        <article class="space-y-4">
-          <p class="animate">
-            I am a minimal, seo friendly, accessible portfolio and blog for developers. 
-            I am an even more lightweight version of my popular theme
-            <Link href="https://github.com/markhorn-dev/astro-sphere" aria-label="Astro Sphere on Github" external>
-              Astro Sphere
-            </Link>.
-            I have a lighthouse scores of 100 across the board for performance, 
-            accesibility, best practices and SEO.
-          </p>
-          <p class="animate">
-            I come packed with full type safety, a sitemap, an rss feed, markdown 
-            and mdx support (use components in your markdown) through astro integrations.
-            I am styled with tailwind and come preconfigured with light, dark and 
-            system/os theme preferences out of the box.
-          </p>
-          <p class="animate">
-            Visit
-            <Link href="https://github.com/markhorn-dev/astro-nano" aria-label="Astro Nano on Github" external>
-              Astro Nano on Github
-            </Link>
-            to fork the repository, read the docs or one-click deploy on Vercel or Netlify. 
-          </p>
-        </article>
-      </section>
+    <!-- 1. 首屏核心区：黄金三秒定生死 -->
+    <section class="animate space-y-4 mb-16">
+      <h1 class="text-4xl font-bold text-black dark:text-white">
+        {SITE.NAME} <span class="text-xl"></span>
+      </h1>
+      <p class="text-xl opacity-80">
+        一人企业实战派 | 专注自动化开发与副业资源对接
+      </p>
+      <p class="opacity-70">
+        提供正规网推项目对接、极客提效工具分享与全网自媒体干货。用代码与自动化，解决实际问题。
+      </p>
+      <div class="flex flex-wrap gap-4 pt-2">
+        <a href="/work" class="px-4 py-2 bg-black text-white dark:bg-white dark:text-black rounded hover:opacity-80 transition">
+          🔥 找项目赚钱
+        </a>
+        <a href="/tools" class="px-4 py-2 border border-black dark:border-white text-black dark:text-white rounded hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition">
+          🛠️ 领提效工具
+        </a>
+      </div>
+    </section>
 
+    <div class="space-y-16">
+      <!-- 2. 项目板块：副业推广拉新 -->
       <section class="animate space-y-6">
         <div class="flex flex-wrap gap-y-2 items-center justify-between">
           <h5 class="font-semibold text-black dark:text-white">
-            最新文章
+            💰 推广兼职项目
           </h5>
-          <Link href="/blog">
-            所有文章
+          <Link href="/work">
+            查看全部项目
           </Link>
         </div>
         <ul class="flex flex-col gap-4">
-          {blog.map(post => (
+          {work.map(work => (
+            <li>
+              <ArrowCard entry={work} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <!-- 3. 媒体板块：自媒体矩阵与干货 -->
+      <section class="animate space-y-6">
+        <div class="flex flex-wrap gap-y-2 items-center justify-between">
+          <h5 class="font-semibold text-black dark:text-white">
+            📡 自媒体干货
+          </h5>
+          <Link href="/media">
+            查看全部文章
+          </Link>
+        </div>
+        <ul class="flex flex-col gap-4">
+          {media.map(post => (
             <li>
               <ArrowCard entry={post} />
             </li>
@@ -81,60 +81,14 @@ const work = await Promise.all(
         </ul>
       </section>
 
-      <section class="animate space-y-6">
-        <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">
-            最新业务
-          </h5>
-          <Link href="/work">
-            所有业务
-          </Link>
-        </div>
-        <ul class="flex flex-col space-y-4">
-          {work.map(entry => (
-            <li>
-              <div class="text-sm opacity-75">
-                {dateRange(entry.data.dateStart, entry.data.dateEnd)}
-              </div>
-              <div class="font-semibold text-black dark:text-white">
-                {entry.data.company}
-              </div>
-              <div class="text-sm opacity-75">
-                {entry.data.role}
-              </div>
-              <article>
-                <entry.Content />
-              </article>
-            </li>
-          ))}
-        </ul>
-      </section>
-
-      <section class="animate space-y-6">
-        <div class="flex flex-wrap gap-y-2 items-center justify-between">
-          <h5 class="font-semibold text-black dark:text-white">
-            近期项目
-          </h5>
-          <Link href="/projects">
-            所有项目
-          </Link>
-        </div>
-        <ul class="flex flex-col gap-4">
-          {projects.map(project => (
-            <li>
-              <ArrowCard entry={project} />
-            </li>
-          ))}
-        </ul>
-      </section>
-
+      <!-- 4. 底部信任与转化区：全网收口 -->
       <section class="animate space-y-4">
         <h5 class="font-semibold text-black dark:text-white">
-          加入我们
+          与我联系 / 获取资源
         </h5>
         <article>
           <p>
-            可以通过以下方式关注我们的近况，并取得联系。
+            扫码添加主理人微信，备注“合作”获取最新项目对接权限，或免费领取提效工具包。
           </p>
         </article>
         <ul class="flex flex-wrap gap-2">

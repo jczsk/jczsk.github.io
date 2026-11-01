@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>粉丝福利</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#111;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#fff}
+
+/* ===== 全局链接：去下划线、去默认色 ===== */
+a,a:link,a:visited{text-decoration:none;color:inherit}
+a:active{opacity:.72}
+
+.app{max-width:430px;margin:0 auto;min-height:100vh;background:#0d0d0d;padding-bottom:32px;overflow-x:hidden}
+
+/* ===== 顶部公众号关注引导 ===== */
+.follow{display:flex;align-items:center;gap:10px;margin:10px 12px;padding:12px 14px;
+  border-radius:16px;background:linear-gradient(135deg,#ff6b3c,#ff2d55);
+  box-shadow:0 6px 18px rgba(255,60,90,.28)}
+.follow .logo{flex:0 0 auto;width:42px;height:42px;border-radius:12px;background:#fff;
+  color:#ff2d55;font-size:16px;font-weight:800;display:flex;align-items:center;
+  justify-content:center}
+.follow .txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.follow .txt b{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis}
+.follow .txt em{font-size:10px;font-style:normal;color:rgba(255,255,255,.82);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.follow .btn{flex:0 0 auto;background:#fff;color:#ff2d55;font-size:12px;font-weight:800;
+  padding:6px 14px;border-radius:14px}
+.follow:active{opacity:.85}
+
+/* ===== 横滑标签栏 ===== 
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:2px 12px 10px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex:0 0 auto;font-size:12px;padding:6px 14px;border-radius:16px;
+  background:#1c1c1c;color:#bdbdbd;white-space:nowrap}
+.tabs a.on{background:linear-gradient(135deg,#ff6b3c,#ff2d55);color:#fff;font-weight:700}
+
+/* 横滑指示条 */
+.slider-bar{height:3px;width:56px;background:linear-gradient(90deg,#ff4d4f,#ff9a3c);border-radius:2px;margin:0 auto 16px}
+
+/* ===== 大卡片 ===== */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 12px}
+.card{position:relative;border-radius:16px;padding:14px;height:118px;overflow:hidden;display:block}
+.card h3{font-size:15px;font-weight:700}
+.card p{font-size:11px;margin-top:4px;opacity:.85}
+.card .go{margin-top:14px;display:inline-block;background:#fff;color:#222;font-size:12px;
+  font-weight:700;padding:5px 14px;border-radius:14px}
+.card .mascot{position:absolute;right:6px;bottom:-4px;width:66px;height:66px;border-radius:50%;
+  background:rgba(255,255,255,.28)}
+.card.yellow{background:linear-gradient(135deg,#ffd93d,#ffb703);color:#5a3d00}
+.card.yellow h3,.card.yellow p{color:#5a3d00}
+.card.blue{background:linear-gradient(135deg,#4ea8ff,#1d6fe0);color:#fff}
+
+/* ===== 宫格 ===== */
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px 4px;padding:16px 10px}
+.gitem{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;color:#d6d6d6}
+.gitem i{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;font-style:normal}
+.gitem small{font-size:10px;color:#9e9e9e}
+.i1{background:linear-gradient(135deg,#ffb347,#ff8c00)}
+.i2{background:linear-gradient(135deg,#ff9f45,#ff6f00)}
+.i3{background:linear-gradient(135deg,#c084fc,#8b5cf6)}
+.i4{background:linear-gradient(135deg,#a78bfa,#7c3aed)}
+.i5{background:linear-gradient(135deg,#ff7a7a,#e63946)}
+.i6{background:linear-gradient(135deg,#ffca28,#f9a825)}
+.i7{background:linear-gradient(135deg,#4fc3f7,#1e88e5)}
+.i8{background:linear-gradient(135deg,#5ec8e5,#1a73c7)}
+.i9{background:linear-gradient(135deg,#ef5350,#b71c1c)}
+.i10{background:linear-gradient(135deg,#ff8a65,#e64a19)}
+
+/* ===== 底部三列 ===== */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px}
+.trio .t{position:relative;display:block;border-radius:14px;padding:12px 10px;height:104px;overflow:hidden}
+.trio .t h4{font-size:13px;font-weight:700}
+.trio .t p{font-size:10px;margin-top:4px;opacity:.9}
+.trio .t .pic{position:absolute;right:4px;bottom:2px;width:44px;height:44px;border-radius:12px;
+  background:rgba(255,255,255,.35)}
+.t1{background:linear-gradient(135deg,#f7a8d8,#e0559f);color:#5b1440}
+.t2{background:linear-gradient(135deg,#ffc14d,#ff8f1f);color:#5a3200}
+.t3{background:linear-gradient(135deg,#5ed6a4,#189e6c);color:#053d28}
+
+/* ===== 问答 ===== */
+.faq{padding:8px 12px 24px}
+.faq-title{font-size:15px;font-weight:700;margin:6px 0 10px;padding-left:8px;
+  border-left:3px solid #ff6b3c;line-height:1.1}
+.faq-item{background:#1a1a1a;border-radius:12px;margin-bottom:8px;overflow:hidden}
+.faq-item summary{list-style:none;cursor:pointer;padding:13px 34px 13px 14px;font-size:13px;
+  color:#e8e8e8;position:relative}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";position:absolute;right:14px;top:50%;transform:translateY(-50%);
+  color:#ff8c42;font-size:16px;transition:transform .2s}
+.faq-item[open] summary::after{content:"−"}
+.faq-item p{padding:0 14px 14px;font-size:12px;line-height:1.7;color:#9a9a9a}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- 顶部公众号关注引导 -->
+<a class="follow" href="https://mp.weixin.qq.com/s/gw5TOJZWTKdusuHCluD5Jw">
+  <span class="logo">关注</span>
+  <span class="txt">
+    <b>关注公众号「蔚县知不道」</b>
+    <em>2026.10.27更新，私信发送“福利”获取最新链接。</em>
+  </span>
+  <span class="btn">关注</span>
+</a>
+
+  <!-- 大卡片 -->
+  <div class="cards">
+    <a class="card yellow" href="https://kurl05.cn/tecA8I">
+      <h3>全网优惠券</h3>
+      <p>吃喝玩乐全都有</p>
+      <span class="go">立即查看</span>
+      <span class="mascot"></span>
+    </a>
+    <a class="card blue" href="https://m.zhen-yue.cn/home/c8570adcb7030e9b">
+      <h3>大流量卡</h3>
+      <p>运营商正规卡29元200G</p>
+      <span class="go">免费领取</span>
+      <span class="mascot"></span>
+    </a>
+  </div>
+
+  <!-- 宫格（10 项） -->
+  <div class="grid">
+    <a class="gitem" href="https://m.tb.cn/h.jfsx2VN?tk=uylCTCZwHzf"><i class="i1">闲鱼</i><span>闲鱼一分购</span><small>一分购入口</small></a>
+    <a class="gitem" href="https://click.meituan.com/t?t=1&c=2&p=5-40Pb1zYyWG"><i class="i2">美团</i><span>美团领券</span><small>美团大额券领取</small></a>
+    <a class="gitem" href="https://qr.douyinpay.com/yhz5QGLNmxWEzyye4HyvPEn81Lqk9z"><i class="i3">抖音</i><span>抖音领券</span><small>抖音大额券</small></a>
+    <a class="gitem" href="https://zcm.wxmob.cn/api/promotionRedirect/openV2?org_id=org-lingyang&promoter_id=lytk21_393&quick_app_id=1&sign=e5d01be94ef11d25f61713d14877d2e3f53847478797c6844537454ef25d29d2&ts=1790909182"><i class="i4">抖音</i><span>抖音一分购</span><small>一分购入口</small></a>
+    <a class="gitem" href="https://zcm.wxmob.cn/api/promotionRedirect/openV2?org_id=org-lingyang&promoter_id=lytk8_202&quick_app_id=1&sign=824ea4b6534ba47e16970d3daccb41691d18ea9654ba7fff5b8b83649fd6b684&ts=1791803852"><i class="i5">优酷</i><span>优酷9.9</span><small>可退款白嫖</small></a>
+    <a class="gitem" href="https://m.bituike.cn/main/login?invite_code=Yk7q1x&ct=1793099989092&sc=ba51105cd97d3ec8"><i class="i6">贷款</i><span>信用卡</span><small>大额信用卡</small></a>
+    <a class="gitem" href="https://3.cn/399RXg-q"><i class="i7">京东</i><span>京东一分购</span><small>一分购入口</small></a>
+    <a class="gitem" href="https://v.didi.cn/worO5DX?source_id=4843jutuike123456&ref_from=dunion"><i class="i8">滴滴</i><span>滴滴出行</span><small>全业务5折</small></a>
+    <a class="gitem" href="https://ot.jfshou.cn/privilege-api/express/delivery/auth/index?shareCode=615NBXBL3&timestamp=1793100771432&extra=4843jutuike123456&userId=4843jutuike123456&sign=BC373CA398B880B528B215C413480B7A"><i class="i9">快递</i><span>快递邮寄</span><small>5元邮寄全国</small></a>
+    <a class="gitem" href="https://www.qipiao.net/h10/#/pages/giftcard/index?entid=101271&source=APP101271&entpara=4843jutuike123456"><i class="i10">会员</i><span>会员充值</span><small>低价会员充值</small></a>
+  </div>
+
+  <!-- 底部三列 · 第一组 -->
+  <div class="trio">
+    <a class="t t1" href="https://qgri.026o.cn/benva"><h4>初级兼职</h4><p>任务简单，赚零花</p><span class="pic"></span></a>
+    <a class="t t2" href="https://m.jiandanhuzhu.com/static/register.html?InviteCode=6HGJYY4J&Channel=APP"><h4>初级兼职</h4><p>长期任务，晋级全职</p><span class="pic"></span></a>
+    <a class="t t3" href="https://m.lingyangtuike.cn/pages/sign/up?invite_code=359420"><h4>高级兼职</h4><p>开启睡后收益</p><span class="pic"></span></a>
+  </div>
+
+  <!-- 底部三列 · 第二组（已换内容，不再重复） -->
+  <div class="trio">
+    <a class="t t3" href="https://haoka.lot-ml.com/plugreg.html?agentid=1541491"><h4>高级兼职</h4><p>高收益，发家致富</p><span class="pic"></span></a>
+    <a class="t t1" href="https://pan.baidu.com/s/1dY411Gycu1Cz7LUu7oTJ2A?pwd=ck6f"><h4>免费编程课</h4><p>口令：@@从少儿编程到千万富翁%
+</p><span class="pic"></span></a>
+    <a class="t t2" href="https://pan.quark.cn/s/22a965dde29e"><h4>免费项目</h4><p>选择远大于努力，/咐置千万富翁叩苓
+</p><span class="pic"></span></a>
+  </div>
+
+  <!-- 常见问题 -->
+  <div class="faq">
+    <h2 class="faq-title">常见问题</h2>
+    <details class="faq-item">
+      <summary>微信为什么打不开链接？</summary>
+      <p>活动越火爆，转发或点击越多，就会被微信限制访问，请复制链接在浏览器打开。</p>
+    </details>
+    <details class="faq-item">
+      <summary>为什么一分购活动无法参加或价格没有优惠？</summary>
+      <p>商家都是为了保留优质用户才做活动的，无法参加就是账号的问题，可以新注册一个账号再参加。</p>
+    </details>
+    <details class="faq-item">
+      <summary>低价大流量卡是正规号卡吗？</summary>
+      <p>都是运营商直接发货的正规卡，可以开热点和打电话，手机营业厅可以随时注销，话费也会退还。</p>
+    </details>
+    <details class="faq-item">
+      <summary>遇到问题怎么联系客服？</summary>
+      <p>关注顶部公众号后，在后台私信留言，我们会在工作时间内尽快回复。</p>
+    </details>
+  </div>
+
+</div>
+</body>
+</html>
